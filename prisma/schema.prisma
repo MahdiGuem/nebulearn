@@ -1,0 +1,267 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Test {
+  id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  test String
+}
+
+model achievements {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String
+  description       String?
+  icon_url          String?
+  xp_requirement    Int?
+  criteria          Json
+  created_at        DateTime            @default(now())
+  user_achievements user_achievements[]
+}
+
+model chat_messages {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role       String
+  content    String
+  metadata   Json?
+  created_at DateTime @default(now())
+  user_id    String   @db.Uuid
+  class_id   String?  @db.Uuid
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, created_at])
+  @@index([user_id])
+}
+
+model classes {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name               String
+  description        String?
+  invite_code        String               @unique
+  is_active          Boolean              @default(true)
+  created_at         DateTime             @default(now())
+  updated_at         DateTime
+  teacher_id         String               @db.Uuid
+  users              users                @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
+  enrollments        enrollments[]
+  student_attributes student_attributes[]
+  subjects           subjects[]
+
+  @@index([invite_code])
+  @@index([teacher_id])
+}
+
+model courses {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String
+  pdf_url      String
+  pdf_filename String?
+  file_size    Int?
+  uploaded_at  DateTime @default(now())
+  subject_id   String   @db.Uuid
+  subjects     subjects @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+
+  @@index([subject_id])
+}
+
+model enrollments {
+  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  enrollment_type EnrollmentType @default(STUDENT)
+  joined_at       DateTime       @default(now())
+  class_id        String         @db.Uuid
+  user_id         String         @db.Uuid
+  classes         classes        @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  users           users          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([class_id, user_id])
+  @@index([class_id])
+  @@index([user_id])
+}
+
+model lesson_attempts {
+  id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_answer           Json
+  is_correct            Boolean?
+  score                 Int?
+  time_spent_seconds    Int?
+  identified_weaknesses String[]
+  attempted_at          DateTime @default(now())
+  lesson_id             String   @db.Uuid
+  user_id               String   @db.Uuid
+  lessons               lessons  @relation(fields: [lesson_id], references: [id], onDelete: Cascade)
+  users                 users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([lesson_id])
+  @@index([user_id])
+  @@index([user_id, lesson_id])
+}
+
+model lesson_completions {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  completed_at   DateTime @default(now())
+  final_score    Int?
+  attempts_count Int      @default(1)
+  lesson_id      String   @db.Uuid
+  user_id        String   @db.Uuid
+  lessons        lessons  @relation(fields: [lesson_id], references: [id], onDelete: Cascade)
+  users          users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([lesson_id, user_id])
+  @@index([lesson_id])
+  @@index([user_id])
+}
+
+model lesson_recommendations {
+  id                  String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  recommendation_type RecommendationType
+  confidence_score    Float?
+  reasoning           String?
+  created_at          DateTime           @default(now())
+  user_id             String             @db.Uuid
+  lesson_id           String             @db.Uuid
+  lessons             lessons            @relation(fields: [lesson_id], references: [id], onDelete: Cascade)
+  users               users              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([lesson_id])
+  @@index([user_id, created_at])
+  @@index([user_id])
+}
+
+model lessons {
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  position               Int
+  title                  String
+  description            String?
+  lesson_type            LessonType
+  difficulty             Int
+  xp_reward              Int                      @default(10)
+  content                Json
+  target_attributes      String[]
+  content_embedding      Unsupported("vector")?
+  created_at             DateTime                 @default(now())
+  updated_at             DateTime
+  track_id               String                   @db.Uuid
+  lesson_attempts        lesson_attempts[]
+  lesson_completions     lesson_completions[]
+  lesson_recommendations lesson_recommendations[]
+  tracks                 tracks                   @relation(fields: [track_id], references: [id], onDelete: Cascade)
+
+  @@unique([track_id, position])
+  @@index([track_id])
+}
+
+model student_attributes {
+  id                 String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  weaknesses         Json                   @default("[]")
+  strengths          Json                   @default("[]")
+  total_xp           Int                    @default(0)
+  current_level      Int                    @default(1)
+  lessons_completed  Int                    @default(0)
+  current_streak     Int                    @default(0)
+  longest_streak     Int                    @default(0)
+  last_activity_date DateTime?
+  behavior_embedding Unsupported("vector")?
+  updated_at         DateTime
+  user_id            String                 @db.Uuid
+  class_id           String                 @db.Uuid
+  classes            classes                @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  users              users                  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, class_id])
+  @@index([class_id])
+  @@index([user_id])
+}
+
+model subjects {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  description String?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime
+  class_id    String    @db.Uuid
+  courses     courses[]
+  classes     classes   @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  tracks      tracks[]
+
+  @@index([class_id])
+}
+
+model system_settings {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key        String   @unique
+  value      Json
+  updated_at DateTime
+}
+
+model tracks {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  description  String?
+  is_published Boolean   @default(false)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime
+  subject_id   String    @db.Uuid
+  lessons      lessons[]
+  subjects     subjects  @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+
+  @@index([subject_id])
+}
+
+model user_achievements {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  earned_at      DateTime     @default(now())
+  user_id        String       @db.Uuid
+  achievement_id String       @db.Uuid
+  achievements   achievements @relation(fields: [achievement_id], references: [id], onDelete: Cascade)
+  users          users        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, achievement_id])
+  @@index([user_id])
+}
+
+model users {
+  id                     String                   @id @db.Uuid
+  email                  String                   @unique
+  password_hash          String?
+  role                   UserRole
+  first_name             String
+  last_name              String
+  avatar_url             String?
+  created_at             DateTime                 @default(now())
+  updated_at             DateTime
+  chat_messages          chat_messages[]
+  classes                classes[]
+  enrollments            enrollments[]
+  lesson_attempts        lesson_attempts[]
+  lesson_completions     lesson_completions[]
+  lesson_recommendations lesson_recommendations[]
+  student_attributes     student_attributes[]
+  user_achievements      user_achievements[]
+}
+
+enum EnrollmentType {
+  STUDENT
+  VISITOR
+}
+
+enum LessonType {
+  SHORT_ANSWER
+  QUIZ
+  YES_NO
+}
+
+enum RecommendationType {
+  WEAKNESS_BASED
+  SIMILAR_STUDENTS
+  TEACHER_SUGGESTED
+  AI_PERSONALIZED
+}
+
+enum UserRole {
+  TEACHER
+  STUDENT
+}
