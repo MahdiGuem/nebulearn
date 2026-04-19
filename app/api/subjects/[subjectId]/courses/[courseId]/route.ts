@@ -8,7 +8,7 @@ async function verifyCourseOwnership(subjectId: string, courseId: string, userId
   const course = await prisma.courses.findUnique({
     where: { id: courseId },
     include: { subjects: { include: { classes: { select: { teacher_id: true } } } } } },
-  });
+  );
 
   if (!course || course.subject_id !== subjectId) {
     return { error: "Course not found", status: 404 } as const;

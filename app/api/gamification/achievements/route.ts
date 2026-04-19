@@ -21,8 +21,8 @@ export async function GET() {
       id: a.id,
       name: a.name,
       description: a.description,
-      icon: a.icon,
-      xpReward: a.xp_reward,
+      icon: a.icon_url,
+      xpRequirement: a.xp_requirement,
       isEarned: earnedIds.includes(a.id),
     }));
 

@@ -144,7 +144,7 @@ export function StudentDrilldownClient({
           </div>
         </div>
         <Link href={`/teacher/classes/${classId}/analytics`}>
-          <button variant="outline" size="sm">
+          <button>
             ← Back
           </button>
         </Link>

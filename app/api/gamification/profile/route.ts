@@ -7,7 +7,25 @@ export async function GET() {
     const user = await getCurrentUser();
     if (!user?.prismaUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const attrs = await prisma.student_attributes.findUnique({ where: { user_id: user.prismaUser.id } });
+    const enrollment = await prisma.enrollments.findFirst({
+      where: { user_id: user.prismaUser.id },
+      select: { class_id: true },
+    });
+
+    if (!enrollment) {
+      return NextResponse.json({
+        userId: user.prismaUser.id,
+        totalXp: 0,
+        currentLevel: 1,
+        currentStreak: 0,
+        longestStreak: 0,
+        lastActivityDate: null,
+      });
+    }
+
+    const attrs = await prisma.student_attributes.findUnique({
+      where: { user_id_class_id: { user_id: user.prismaUser.id, class_id: enrollment.class_id } },
+    });
 
     return NextResponse.json({
       userId: user.prismaUser.id,

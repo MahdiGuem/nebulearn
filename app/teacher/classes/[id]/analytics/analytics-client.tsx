@@ -13,6 +13,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { Badge } from "lucide-react";
 
 // ───── Types ─────
 
@@ -131,7 +132,7 @@ export function TeacherAnalyticsClient({ classId }: { classId: string }) {
           <p className="text-sm text-muted-foreground">Class Analytics</p>
         </div>
         <Link href={`/teacher/classes/${classId}`}>
-          <button variant="outline" size="sm">
+          <button>
             ← Back to Class
           </button>
         </Link>
@@ -173,16 +174,15 @@ export function TeacherAnalyticsClient({ classId }: { classId: string }) {
                     <div className="font-medium truncate group-hover:text-primary transition-colors">
                       {s.firstName} {s.lastName}
                     </div>
-                    <span className= variant="outline" className="text-[10px] h-5 bg-background">
+                    <Badge className="text-[10px] h-5 bg-background">
                       High Risk
                     </Badge>
                   </div>
                   
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {s.risks.map((risk, i) => (
-                      <span className= 
+                      <Badge
                         key={i} 
-                        variant="destructive" 
                         className="text-[10px] px-1.5 py-0.5 h-auto font-normal opacity-90"
                       >
                         {risk}
@@ -302,7 +302,7 @@ export function TeacherAnalyticsClient({ classId }: { classId: string }) {
             Student Roster ({students.length})
           </h3>
           <div className="flex gap-2">
-            <button variant="outline" size="sm" onClick={() => setSortBy("name")}>
+            <button onClick={() => setSortBy("name")}>
               Reset Sort
             </button>
           </div>
@@ -362,13 +362,12 @@ export function TeacherAnalyticsClient({ classId }: { classId: string }) {
                         </div>
                       </td>
                       <td className="text-center px-4 py-4 font-medium text-foreground">
-                        <span className= variant="secondary" className="font-mono">
+                        <Badge className="font-mono">
                           {s.totalXp.toLocaleString()} XP
                         </Badge>
                       </td>
                       <td className="text-center px-4 py-4">
-                        <span className= 
-                          variant={s.avgScore >= 80 ? "success" : s.avgScore >= 60 ? "warning" : "destructive"}
+                        <Badge
                           className="font-bold"
                         >
                           {s.avgScore.toFixed(1)}%
@@ -387,13 +386,13 @@ export function TeacherAnalyticsClient({ classId }: { classId: string }) {
                       </td>
                       <td className="text-center px-4 py-4">
                         {isAtRisk ? (
-                          <span className= variant="destructive" className="animate-pulse">At Risk</Badge>
+                          <Badge  className="animate-pulse">At Risk</Badge>
                         ) : (
-                          <span className= variant="secondary" className="text-muted-foreground">On Track</Badge>
+                          <Badge className="text-muted-foreground">On Track</Badge>
                         )}
                       </td>
                       <td className="px-4 py-4 text-right">
-                        <button variant="ghost" size="sm" asChild>
+                        <button>
                           <Link href={`/teacher/classes/${classId}/analytics/student/${s.id}`}>
                             Details
                           </Link>

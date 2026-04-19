@@ -6,7 +6,7 @@ async function verifyLessonOwnership(lessonId: string, trackId: string, userId: 
   const lesson = await prisma.lessons.findUnique({
     where: { id: lessonId },
     include: { tracks: { include: { subjects: { include: { classes: { select: { teacher_id: true } } } } } } } },
-  });
+  );
 
   if (!lesson || lesson.track_id !== trackId) return { error: "Lesson not found", status: 404 } as const;
   if (lesson.tracks.subjects.classes.teacher_id !== userId) return { error: "You don't own this class", status: 403 } as const;
