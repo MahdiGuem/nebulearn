@@ -3,7 +3,7 @@ import { StudentClassesClient } from "./classes-client";
 
 export default async function StudentClassesPage() {
   return (
-    <div className="relative min-h-screen overflow-auto">
+    <div className="relative min-h-screen overflow-hidden">
       <div className="absolute inset-0 bg-stars"></div>
       <Suspense
         fallback={

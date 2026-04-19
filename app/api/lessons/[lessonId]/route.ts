@@ -139,12 +139,14 @@ export async function POST(
     if (lesson.lesson_type === "QUIZ") {
       const options = content?.options || [];
       const answerIndex = parseInt(answer);
-      if (!isNaN(answerIndex) && answerIndex >= 0 && answerIndex < options.length) {
-        correctAnswer = options[answerIndex];
+      const correctIndex = parseInt(content?.correctAnswer) || 0;
+      console.log("QUIZ DEBUG:", { answer, answerIndex, correctIndex, options });
+      isCorrect = !isNaN(answerIndex) && answerIndex === correctIndex;
+      if (correctIndex >= 0 && correctIndex < options.length) {
+        correctAnswer = options[correctIndex];
       } else {
         correctAnswer = String(content?.correctAnswer || "");
       }
-      isCorrect = String(answer).trim().toLowerCase() === correctAnswer.toLowerCase();
       score = isCorrect ? 100 : 0;
     } else if (lesson.lesson_type === "YES_NO") {
       correctAnswer = String(content?.correctAnswer || "").toLowerCase();

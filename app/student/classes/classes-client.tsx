@@ -163,7 +163,7 @@ function NebulaCard({
   return (
     <button
       onClick={onClick}
-      className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02]"
+      className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02]"
     >
       <canvas
         ref={canvasRef}
@@ -250,7 +250,7 @@ export function StudentClassesClient() {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 overflow-hidden">
         {[1, 2, 3].map((i) => (
           <div key={i} className="aspect-square rounded-xl bg-white/5 animate-pulse" />
         ))}
@@ -259,7 +259,7 @@ export function StudentClassesClient() {
   }
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-12 overflow-hidden">
       <div>
         <h1 className="title mb-6">My Classes</h1>
       </div>
@@ -302,7 +302,7 @@ export function StudentClassesClient() {
             <p className="text-white/20 text-sm mt-2">Enter an invite code above to get started</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 overflow-hidden">
             {classes.map((c) => (
               <NebulaCard
                 key={c.id}

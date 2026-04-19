@@ -9,7 +9,7 @@ export default async function StudentSubjectsPage({
   const { classId } = await params;
 
   return (
-    <div className="relative min-h-screen overflow-auto">
+    <div className="relative min-h-screen overflow-auto p-4">
       <div className="absolute inset-0 bg-stars"></div>
       <Suspense
         fallback={

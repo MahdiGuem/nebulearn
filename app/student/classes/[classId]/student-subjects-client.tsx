@@ -41,7 +41,7 @@ function PlanetCard({
   return (
     <button
       onClick={onClick}
-      className="group relative aspect-square rounded-full cursor-pointer transition-all duration-300 hover:scale-[1.05]"
+      className="group relative aspect-square rounded-full cursor-pointer transition-transform duration-300 hover:scale-[1.02]"
     >
       <div
         className={`absolute inset-0 rounded-full bg-gradient-to-br ${colors.base}`}
@@ -147,7 +147,7 @@ export function StudentSubjectsClient({ classId }: { classId: string }) {
           {subject.tracks.length === 0 ? (
             <p className="text-white/30 text-sm">No tracks in this subject</p>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {subject.tracks.map((track, trackIndex) => (
                 <PlanetCard
                   key={track.id}
