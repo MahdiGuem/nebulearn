@@ -36,7 +36,6 @@ export async function GET(
       where: { class_id: classId },
       include: {
         tracks: {
-          where: { is_published: true },
           include: {
             _count: { select: { lessons: true } },
           },

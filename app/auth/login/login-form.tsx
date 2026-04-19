@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/ai-test";
+  const callbackUrl = searchParams.get("callbackUrl");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -27,7 +27,6 @@ export default function LoginForm() {
         email: formData.email.toLowerCase(),
         password: formData.password,
         redirect: false,
-        callbackUrl,
       });
 
       if (result?.error) {
@@ -36,7 +35,23 @@ export default function LoginForm() {
         return;
       }
 
-      router.push(callbackUrl);
+      // Fetch user role from session
+      const sessionRes = await fetch("/api/auth/session");
+      const session = await sessionRes.json();
+      
+      // Redirect based on role
+      const userRole = session?.user?.role;
+      let redirectUrl = callbackUrl || "/";
+      
+      if (!callbackUrl) {
+        if (userRole === "TEACHER") {
+          redirectUrl = "/teacher";
+        } else if (userRole === "STUDENT") {
+          redirectUrl = "/student";
+        }
+      }
+
+      router.push(redirectUrl);
       router.refresh();
     } catch (err) {
       setError("An error occurred. Please try again.");
