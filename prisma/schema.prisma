@@ -265,3 +265,38 @@ enum UserRole {
   TEACHER
   STUDENT
 }
+
+// Document and Chunk models for RAG Quiz Generator
+model documents {
+  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String
+  pdf_url     String
+  class_id    String @db.Uuid
+  teacher_id  String @db.Uuid
+  subject_id  String @db.Uuid
+  status      String @default("queued") // queued | processing | ready | error
+  progress    Int    @default(0) // 0-100
+  error_message String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  chunks chunks[]
+
+  @@index([teacher_id])
+  @@index([status])
+}
+
+model chunks {
+  id           String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  document_id  String @db.Uuid
+  content      String
+  content_type String @default("text") // text | image_desc | table_desc | diagram_desc
+  page_number  Int
+  section      String?
+  embedding    Unsupported("vector(384)")?
+
+  documents documents @relation(fields: [document_id], references: [id], onDelete: Cascade)
+
+  @@index([document_id])
+  @@index([embedding], name: "chunk_embedding_idx")
+}
