@@ -32,13 +32,13 @@ export function SpaceLandingPage() {
       <section className="relative min-h-screen flex items-center justify-center px-8">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="shiny-text text-8xl md:text-9xl tracking-tighter leading-none mb-12">
-            STELLARIS
+            NEBULEARN
           </h1>
 
           <div className="space-y-8 mb-16">
             <div className="h-px w-24 bg-white/30 mx-auto"></div>
-            <p className="text-white/50 text-xl md:text-2xl tracking-wide max-w-2xl mx-auto">
-              Navigate the cosmos of possibilities
+            <p className="text-white/50 text-xl md:text-2xl tracking-wide max-w-3xl mx-auto">
+              Teach, learn and compete across galaxies with the help of AI!
             </p>
             <div className="h-px w-24 bg-white/30 mx-auto"></div>
           </div>

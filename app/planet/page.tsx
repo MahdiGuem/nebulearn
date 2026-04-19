@@ -399,24 +399,27 @@ export default function PlanetPage() {
     setSettings(p => ({ ...p, [key]: val }))
 
   return (
-    <main className="page">
-      <aside className="panel" />
+    <div className="relative min-h-screen overflow-auto">
+      <div className="absolute inset-0 bg-stars"></div>
+      <div className="relative z-10">
+        <aside className="panel" />
 
-      <section className="canvas-area">
-        <div className="canvas-wrapper">
-          <canvas ref={canvasRef} width={640} height={480} />
-        </div>
-        <div className="canvas-toolbar">
-          <div className="toolbar-colors">
-            <input type="color" value={settings.baseColor} onChange={e => upd('baseColor', e.target.value)} title="Planet" />
-            <input type="color" value={settings.glowColor} onChange={e => upd('glowColor', e.target.value)} title="Glow" />
+        <section className="canvas-area">
+          <div className="canvas-wrapper">
+            <canvas ref={canvasRef} width={640} height={480} />
           </div>
-          <div className="toolbar-buttons">
-            <button className="btn btn-ghost" onClick={randomize}>⟳ Randomize</button>
-            <button className="btn btn-primary" onClick={download}>↓ Export PNG</button>
+          <div className="canvas-toolbar">
+            <div className="toolbar-colors">
+              <input type="color" value={settings.baseColor} onChange={e => upd('baseColor', e.target.value)} title="Planet" />
+              <input type="color" value={settings.glowColor} onChange={e => upd('glowColor', e.target.value)} title="Glow" />
+            </div>
+            <div className="toolbar-buttons">
+              <button className="btn btn-ghost" onClick={randomize}>⟳ Randomize</button>
+              <button className="btn btn-primary" onClick={download}>↓ Export PNG</button>
+            </div>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </div>
+    </div>
   )
 }

@@ -260,24 +260,27 @@ export default function NebulaPage() {
     setSettings(p => ({ ...p, [key]: val }))
 
   return (
-    <main className="page">
-      <aside className="panel" />
+    <div className="relative min-h-screen overflow-auto">
+      <div className="absolute inset-0 bg-stars"></div>
+      <div className="relative z-10">
+        <aside className="panel" />
 
-      <section className="canvas-area">
-        <div className="canvas-wrapper">
-          <canvas ref={canvasRef} width={640} height={480} />
-        </div>
-        <div className="canvas-toolbar">
-          <div className="toolbar-colors">
-            <input type="color" value={settings.color1} onChange={e => upd('color1', e.target.value)} title="Primary" />
-            <input type="color" value={settings.color2} onChange={e => upd('color2', e.target.value)} title="Secondary" />
+        <section className="canvas-area">
+          <div className="canvas-wrapper">
+            <canvas ref={canvasRef} width={640} height={480} />
           </div>
-          <div className="toolbar-buttons">
-            <button className="btn btn-ghost" onClick={randomize}>⟳ Randomize</button>
-            <button className="btn btn-primary" onClick={download}>↓ Export PNG</button>
+          <div className="canvas-toolbar">
+            <div className="toolbar-colors">
+              <input type="color" value={settings.color1} onChange={e => upd('color1', e.target.value)} title="Primary" />
+              <input type="color" value={settings.color2} onChange={e => upd('color2', e.target.value)} title="Secondary" />
+            </div>
+            <div className="toolbar-buttons">
+              <button className="btn btn-ghost" onClick={randomize}>⟳ Randomize</button>
+              <button className="btn btn-primary" onClick={download}>↓ Export PNG</button>
+            </div>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </div>
+    </div>
   )
 }
